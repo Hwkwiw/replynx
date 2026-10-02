@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RepLynx</title>
+<style>
+:root{--bg:#0b0716;--card:#150d2b;--line:#a855f7;--cy:#22d3ee;--tx:#f3e8ff;--mut:#a79bc9}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;min-height:100vh;overflow-x:hidden}
+.bg{position:fixed;inset:0;z-index:-1;background:linear-gradient(120deg,#0b0716,#1e0f45,#0a2236,#0b0716);background-size:300% 300%;animation:move 18s ease infinite}
+@keyframes move{0%,100%{background-position:0 50%}50%{background-position:100% 50%}}
+header{text-align:center;padding:28px 16px 8px}
+.logo{width:96px;height:96px}
+.eye{transform-origin:center;transform-box:fill-box;animation:blink 5s infinite}
+@keyframes blink{0%,92%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
+.logo:hover .ear{transform:translateY(-3px)}
+.ear{transition:transform .2s}
+h1{font-size:2.2rem;letter-spacing:2px;margin-top:6px}
+.tag{color:var(--mut);margin-top:4px}
+main{max-width:1100px;margin:0 auto;padding:16px}
+h2{text-align:center;font-size:1.6rem;margin:18px 0 14px}
+.cats{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.cats button{background:#000;color:var(--tx);border:2px solid var(--line);border-radius:999px;padding:10px 18px;font-weight:700;font-size:.95rem;cursor:pointer;transition:.2s}
+.cats button:hover{transform:translateY(-2px);border-color:var(--cy)}
+.cats button.on{background:var(--line);color:#fff}
+.search{display:block;width:100%;max-width:700px;margin:20px auto;padding:14px 20px;background:#111;color:var(--tx);border:2px solid var(--line);border-radius:999px;font-size:1rem}
+.search:focus{outline:2px solid var(--cy)}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+@media(min-width:760px){.grid{grid-template-columns:repeat(4,1fr);gap:18px}}
+.pc{background:var(--card);border:1px solid #2d1b5a;border-radius:22px;padding:12px;display:flex;flex-direction:column;gap:8px;transition:.25s;animation:in .5s both}
+.pc:hover{transform:translateY(-4px);border-color:var(--line);box-shadow:0 8px 24px rgba(168,85,247,.25)}
+@keyframes in{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.ph{aspect-ratio:1;border-radius:14px;background:#0d0820;display:flex;align-items:center;justify-content:center;overflow:hidden;color:var(--mut);font-size:.8rem;text-align:center}
+.ph img{width:100%;height:100%;object-fit:cover}
+.nm{font-weight:700;font-size:.95rem}
+.pr{color:var(--cy);font-weight:700;font-size:1.1rem}
+.buy{margin-top:auto;display:block;text-align:center;text-decoration:none;background:linear-gradient(90deg,#6d28d9,#a855f7);color:#fff;font-weight:700;padding:10px;border-radius:12px;transition:.2s}
+.buy:hover{filter:brightness(1.2)}
+.more{display:block;margin:26px auto;background:#2a1b55;color:#f0abfc;border:2px solid var(--line);border-radius:999px;padding:12px 34px;font-weight:700;font-size:1rem;cursor:pointer}
+.empty{grid-column:1/-1;text-align:center;color:var(--mut);padding:30px}
+footer{text-align:center;color:var(--mut);font-size:.8rem;padding:30px 16px 40px;max-width:700px;margin:0 auto}
+footer a{color:var(--cy)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+
+<header>
+  <!-- LOGO: poti inlocui acest <svg> cu imaginea ta: <img src="logo.png" class="logo"> -->
+  <svg class="logo" viewBox="-70 -70 140 130" aria-label="RepLynx logo">
+    <g class="ear"><path d="M-40,-42 L-44,-58 M40,-42 L44,-58" stroke="#a855f7" stroke-width="3" fill="none" stroke-linecap="round"/></g>
+    <path d="M-40,-42 L-14,-20 L0,-17 L14,-20 L40,-42 L44,-8 L52,8 L30,30 L0,42 L-30,30 L-52,8 L-44,-8 Z" fill="#1a1033" stroke="#a855f7" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M0,-17 L0,2 M-30,30 L-12,14 M30,30 L12,14" stroke="#22d3ee" stroke-width="1.5" fill="none" opacity=".7"/>
+    <path class="eye" d="M-30,-2 L-10,2 L-26,7 Z M30,-2 L10,2 L26,7 Z" fill="#22d3ee"/>
+    <path d="M-6,16 L6,16 L0,23 Z" fill="#a855f7"/>
+  </svg>
+  <h1>RepLynx</h1>
+  <p class="tag">Your style, one click away</p>
+</header>
+
+<main>
+  <h2>PRODUCTS</h2>
+  <div class="cats" id="cats"></div>
+  <input class="search" id="q" placeholder="Search... and press Enter" enterkeyhint="search">
+  <div class="grid" id="grid"></div>
+  <button class="more" id="more">Load more</button>
+</main>
+
+<footer>
+  RepLynx does not sell products. We only share links to external stores.
+  Prices and availability can change on the seller's site.
+  <br><br>Contact: <a href="#">your@email.com</a> · <a href="#">Instagram</a> · <a href="#">TikTok</a>
+</footer>
+
+<script>
+/* ==========================================================
+   CUM ADAUGI UN PRODUS
+   Copiaza o linie din lista de mai jos si schimba datele:
+   { name: "Nume", cat: "Categorie", img: "link poza", price: "19.99$", link: "link magazin" },
+   - cat trebuie sa fie una din categoriile din CATEGORIES
+   - img: lasa "" daca nu ai poza (apare un loc gol)
+   ========================================================== */
+const CATEGORIES = ["Shoes","T-shirts","Hoodies","Jeans & Pants","Jackets","Bags & Backpacks","Accessories","Others"];
+
+const PRODUCTS = [
+  { name: "Example Sneakers",  cat: "Shoes",         img: "", price: "29.99$", link: "#" },
+  { name: "Example Sneakers 2",cat: "Shoes",         img: "", price: "34.99$", link: "#" },
+  { name: "Example T-shirt",   cat: "T-shirts",      img: "", price: "9.99$",  link: "#" },
+  { name: "Example T-shirt 2", cat: "T-shirts",      img: "", price: "11.99$", link: "#" },
+  { name: "Example Hoodie",    cat: "Hoodies",       img: "", price: "19.24$", link: "#" },
+  { name: "Example Sweatshirt",cat: "Hoodies",       img: "", price: "21.50$", link: "#" },
+  { name: "Example Jeans",     cat: "Jeans & Pants", img: "", price: "24.99$", link: "#" },
+  { name: "Example Cargo Pants",cat: "Jeans & Pants",img: "", price: "27.99$", link: "#" },
+  { name: "Example Jacket",    cat: "Jackets",       img: "", price: "49.99$", link: "#" },
+  { name: "Example Puffer",    cat: "Jackets",       img: "", price: "59.99$", link: "#" },
+  { name: "Example Backpack",  cat: "Bags & Backpacks", img: "", price: "22.99$", link: "#" },
+  { name: "Example Bag",       cat: "Bags & Backpacks", img: "", price: "18.99$", link: "#" },
+  { name: "Example Scarf",     cat: "Accessories",   img: "", price: "11.97$", link: "#" },
+  { name: "Example Beanie",    cat: "Accessories",   img: "", price: "7.99$",  link: "#" },
+  { name: "Example Belt",      cat: "Accessories",   img: "", price: "8.99$",  link: "#" },
+  { name: "Example Item",      cat: "Others",        img: "", price: "5.99$",  link: "#" }
+];
+
+const PAGE = 8;
+let cat = "All", term = "", shown = PAGE;
+const $ = id => document.getElementById(id);
+
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function safeUrl(u){return /^(https?:\/\/|#)/.test(u) ? u : "#"}
+
+function buildCats(){
+  $("cats").innerHTML = ["All",...CATEGORIES].map(c =>
+    `<button class="${c===cat?'on':''}" data-c="${esc(c)}">${esc(c)}</button>`).join("");
+}
+
+function render(){
+  const list = PRODUCTS.filter(p =>
+    (cat==="All" || p.cat===cat) && p.name.toLowerCase().includes(term));
+  $("grid").innerHTML = list.slice(0,shown).map((p,i) => `
+    <article class="pc" style="animation-delay:${(i%PAGE)*60}ms">
+      <div class="ph">${p.img ? `<img src="${esc(p.img)}" alt="${esc(p.name)}" loading="lazy">` : "Add photo here"}</div>
+      <div class="nm">${esc(p.name)}</div>
+      <div class="pr">${esc(p.price)}</div>
+      <a class="buy" href="${esc(safeUrl(p.link))}" target="_blank" rel="noopener noreferrer">Buy</a>
+    </article>`).join("") || `<p class="empty">No products here yet. Add some in the PRODUCTS list.</p>`;
+  $("more").style.display = list.length > shown ? "block" : "none";
+}
+
+$("cats").addEventListener("click", e => {
+  const b = e.target.closest("button"); if(!b) return;
+  cat = b.dataset.c; shown = PAGE; buildCats(); render();
+});
+$("q").addEventListener("keydown", e => {
+  if(e.key==="Enter"){ term = e.target.value.trim().toLowerCase(); shown = PAGE; render(); }
+});
+$("q").addEventListener("input", e => {
+  if(!e.target.value){ term = ""; render(); }
+});
+$("more").addEventListener("click", () => { shown += PAGE; render(); });
+
+buildCats(); render();
+</script>
+</body>
+</html>
